@@ -14,6 +14,9 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.sampleText.setOnClickListener {
+            MediaPlayerSingleton.play(this, R.raw.sad)
+        }
 
         // Example of a call to a native method
         binding.sampleText.text = stringFromJNI()
