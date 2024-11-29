@@ -1,0 +1,111 @@
+file_paths.xml 是 Android 项目中用于配置 FileProvider 可访问路径的 XML 文件。以下是完整的配置方法和示例：
+
+文件路径配置文件 file_paths.xml
+
+文件位置
+
+file_paths.xml 应放置在项目的 res/xml/ 目录下。如果目录不存在，请创建：
+
+res/xml/file_paths.xml
+
+文件结构
+
+file_paths.xml 中的 <paths> 元素定义了应用程序允许通过 FileProvider 访问的文件路径。
+
+常见配置选项
+
+	•	external-path：允许访问外部存储路径。
+	•	files-path：允许访问应用的内部文件存储路径。
+	•	cache-path：允许访问应用的内部缓存路径。
+	•	external-files-path：允许访问应用的外部文件存储路径（推荐用于存储图片）。
+	•	external-cache-path：允许访问应用的外部缓存路径。
+
+常见场景配置
+
+1. 访问应用外部存储图片路径
+
+适用于存储到 getExternalFilesDir(Environment.DIRECTORY_PICTURES) 的图片：
+
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <external-path
+        name="images"
+        path="Android/data/com.example.myapp/files/Pictures/" />
+</paths>
+
+2. 访问应用内部文件路径
+
+适用于存储到 getFilesDir() 的文件：
+
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <files-path
+        name="internal_files"
+        path="images/" />
+</paths>
+
+3. 访问应用缓存路径
+
+适用于存储到 getCacheDir() 或 getExternalCacheDir() 的临时文件：
+
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 内部缓存目录 -->
+    <cache-path
+        name="internal_cache"
+        path="temp/" />
+    
+    <!-- 外部缓存目录 -->
+    <external-cache-path
+        name="external_cache"
+        path="temp/" />
+</paths>
+
+4. 访问公共存储目录（较少使用）
+
+如果你需要访问公共存储（如 /storage/emulated/0/Download/），需要配置 external-path：
+
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <external-path
+        name="downloads"
+        path="Download/" />
+</paths>
+
+完整示例
+
+综合使用多种路径：
+
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 应用外部存储图片目录 -->
+    <external-files-path
+        name="external_files"
+        path="Pictures/" />
+    
+    <!-- 应用内部文件目录 -->
+    <files-path
+        name="internal_files"
+        path="images/" />
+
+    <!-- 应用外部缓存目录 -->
+    <external-cache-path
+        name="external_cache"
+        path="cache/" />
+
+    <!-- 应用内部缓存目录 -->
+    <cache-path
+        name="internal_cache"
+        path="temp/" />
+
+    <!-- 公共下载目录 -->
+    <external-path
+        name="downloads"
+        path="Download/" />
+</paths>
+
+注意事项
+
+	1.	路径选择：
+	•	推荐使用 external-files-path 或 files-path，这样可以确保文件存储在应用专属目录中，不会污染公共存储。
+	•	如果使用 external-path，要注意 Android 10+ 的 Scoped Storage 限制。
+	2.	FileProvider 授权检查：
+	•	确保 AndroidManifest.xml 中的 FileProvider 的 authorities 与代码中的 FileProvider.getUriForFile() 的 authorities 参数一致。
+	3.	路径中不要硬编码设备的具体路径，例如 /storage/emulated/0/，应使用 Android API 提供的路径方法（如 getExternalFilesDir()）。
+
+通过正确配置 file_paths.xml，可以安全地通过 FileProvider 为系统或其他应用提供文件访问权限。
